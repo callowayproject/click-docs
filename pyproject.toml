@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "click_docs"
-description = "Genereate Markdown documentation for your Click application"
+description = "Generate Markdown documentation for your Click application"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -63,8 +63,8 @@ docs = [
     "mkdocstrings[python]",
 ]
 
-#[project.scripts]
-#click-docs = click_docs.cli:cli
+[project.scripts]
+click-docs = "click_docs.cli:cli"
 
 [tool.hatch.version]
 path = "click_docs/__init__.py"
