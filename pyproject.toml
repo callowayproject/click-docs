@@ -56,6 +56,7 @@ test = [
     "pytest-asyncio",
     "pre-commit",
     "coverage",
+    "pytest-agent-digest>=0.3.1",
 ]
 docs = [
     "python-frontmatter",
@@ -207,6 +208,7 @@ ignore = [
     "D107", # undocumented-public-init
     "D200", # fits-on-one-line
     "D212", # multi-line-summary-first-line
+    "D301",
     "PD011", # pandas-use-of-dot-values
     "PLC0415", # import-outside-toplevel
     "PLW0108", # unnecessary-lambda

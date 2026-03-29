@@ -137,3 +137,78 @@ class TestCliFormattingOptions:
         assert result.exit_code == 0
         assert "| Name | Type | Description |" in result.output
         assert "--help" not in result.output
+
+
+class TestCliPhase3:
+    def test_depth_0_only_root(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "root", "--depth", "0"])
+        assert result.exit_code == 0
+        assert "# root" in result.output
+        assert "## admin" not in result.output
+
+    def test_depth_1_direct_children_only(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "root", "--depth", "1"])
+        assert result.exit_code == 0
+        assert "## admin" in result.output
+        assert "### reset" not in result.output
+
+    def test_no_depth_unlimited(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "root"])
+        assert result.exit_code == 0
+        assert "### reset" in result.output
+
+    def test_exclude_skips_command(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "root", "--exclude", "root.admin"])
+        assert result.exit_code == 0
+        assert "## admin" not in result.output
+        assert "## hello" in result.output
+
+    def test_exclude_multiple(self, runner):
+        result = runner.invoke(
+            cli,
+            [
+                FIXTURE_APP,
+                "--command-name",
+                "root",
+                "--exclude",
+                "root.admin",
+                "--exclude",
+                "root.hello",
+            ],
+        )
+        assert result.exit_code == 0
+        assert "## admin" not in result.output
+        assert "## hello" not in result.output
+
+    def test_hidden_commands_omitted_by_default(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "admin"])
+        assert result.exit_code == 0
+        assert "secret" not in result.output
+
+    def test_show_hidden_includes_hidden_commands(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "admin", "--show-hidden"])
+        assert result.exit_code == 0
+        assert "secret" in result.output
+
+    def test_show_hidden_includes_hidden_options(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "admin", "--show-hidden"])
+        assert result.exit_code == 0
+        assert "--verbose" in result.output
+
+    def test_list_subcommands_adds_toc(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "root", "--list-subcommands"])
+        assert result.exit_code == 0
+        assert "**Subcommands:**" in result.output
+        assert "[admin](#admin)" in result.output
+
+    def test_remove_ascii_art_strips_block(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "ascii_art", "--remove-ascii-art"])
+        assert result.exit_code == 0
+        assert "ASCII ART" not in result.output
+        assert "Regular description" in result.output
+
+    def test_full_command_path_uses_path_in_headers(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "root", "--full-command-path"])
+        assert result.exit_code == 0
+        assert "## root admin" in result.output
+        assert "## root hello" in result.output

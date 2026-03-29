@@ -9,6 +9,60 @@ from click_docs.generator import generate_docs
 
 EXPECTED_DIR = Path(__file__).parent / "app"
 
+# ---------------------------------------------------------------------------
+# Phase 3 fixture commands (mirrors tests/app/cli.py for isolation)
+# ---------------------------------------------------------------------------
+
+
+@click.command(name="reset")
+@click.option("--force", is_flag=True, help="Force the reset.")
+def _reset(force):
+    """Reset the system to defaults."""
+
+
+@click.command(name="secret", hidden=True)
+def _secret():
+    """Top-secret command."""
+
+
+@click.command(name="status")
+@click.option("--verbose", is_flag=True, hidden=True, help="Enable verbose output.")
+def _status(verbose):
+    """Check system status."""
+
+
+@click.group(name="admin")
+def _admin():
+    """Admin commands."""
+
+
+_admin.add_command(_reset)
+_admin.add_command(_secret)
+_admin.add_command(_status)
+
+
+@click.command(name="hello")
+@click.option("--name", required=True, help="The person to greet.")
+def _hello(name):
+    """Simple program that greets NAME."""
+
+
+@click.group(name="root")
+def _root():
+    """Root command with subgroups."""
+
+
+_root.add_command(_admin)
+_root.add_command(_hello)
+
+
+@click.command(name="ascii-art")
+def _ascii_art():
+    """\b
+    ===  ASCII ART  ===
+
+    Regular description after the art."""
+
 
 @click.command()
 @click.option("--count", default=1, help="Number of greetings.")
@@ -160,4 +214,197 @@ class TestStyleTable:
     def test_snapshot_plain(self):
         expected = (EXPECTED_DIR / "expected_special_types_plain.md").read_text()
         result = generate_docs(special_types_cmd, program_name="special-types", style="plain")
+        assert result == expected
+
+
+# ---------------------------------------------------------------------------
+# Phase 3 tests
+# ---------------------------------------------------------------------------
+
+
+class TestGroupRecursion:
+    def test_group_includes_subcommand_docs(self):
+        result = generate_docs(_root, program_name="root")
+        assert "# root" in result
+        assert "## admin" in result
+        assert "## hello" in result
+
+    def test_subcommand_docs_include_title(self):
+        result = generate_docs(_root, program_name="root")
+        assert "Admin commands." in result
+        assert "Simple program that greets NAME." in result
+
+    def test_subcommand_usage_uses_full_path(self):
+        result = generate_docs(_root, program_name="root")
+        assert "root admin" in result
+        assert "root hello" in result
+
+    def test_nested_group_recurses_to_leaves(self):
+        result = generate_docs(_root, program_name="root")
+        assert "### reset" in result
+        assert "### status" in result
+
+    def test_snapshot_recursive(self):
+        expected = (EXPECTED_DIR / "expected_root_recursive.md").read_text()
+        result = generate_docs(_root, program_name="root")
+        assert result == expected
+
+
+class TestDepthLimiting:
+    def test_depth_0_produces_root_only(self):
+        result = generate_docs(_root, program_name="root", depth=0)
+        assert "# root" in result
+        assert "## admin" not in result
+        assert "## hello" not in result
+
+    def test_depth_1_includes_direct_children(self):
+        result = generate_docs(_root, program_name="root", depth=1)
+        assert "# root" in result
+        assert "## admin" in result
+        assert "## hello" in result
+
+    def test_depth_1_excludes_grandchildren(self):
+        result = generate_docs(_root, program_name="root", depth=1)
+        assert "### reset" not in result
+        assert "### status" not in result
+
+    def test_depth_none_is_unlimited(self):
+        result = generate_docs(_root, program_name="root", depth=None)
+        assert "### reset" in result
+        assert "### status" in result
+
+    def test_snapshot_depth_0(self):
+        expected = (EXPECTED_DIR / "expected_root_depth_0.md").read_text()
+        result = generate_docs(_root, program_name="root", depth=0)
+        assert result == expected
+
+    def test_snapshot_depth_1(self):
+        expected = (EXPECTED_DIR / "expected_root_depth_1.md").read_text()
+        result = generate_docs(_root, program_name="root", depth=1)
+        assert result == expected
+
+
+class TestExclusion:
+    def test_exclude_skips_command_and_subtree(self):
+        result = generate_docs(_root, program_name="root", exclude=("root.admin",))
+        assert "## admin" not in result
+        assert "### reset" not in result
+
+    def test_excluded_sibling_still_present(self):
+        result = generate_docs(_root, program_name="root", exclude=("root.admin",))
+        assert "## hello" in result
+
+    def test_exclude_leaf_command(self):
+        result = generate_docs(_root, program_name="root", exclude=("root.admin.reset",))
+        assert "## admin" in result
+        assert "### reset" not in result
+        assert "### status" in result
+
+    def test_multiple_excludes(self):
+        result = generate_docs(_root, program_name="root", exclude=("root.admin", "root.hello"))
+        assert "## admin" not in result
+        assert "## hello" not in result
+
+    def test_snapshot_exclude_admin(self):
+        expected = (EXPECTED_DIR / "expected_root_exclude_admin.md").read_text()
+        result = generate_docs(_root, program_name="root", exclude=("root.admin",))
+        assert result == expected
+
+
+class TestHiddenCommands:
+    def test_hidden_command_omitted_by_default(self):
+        result = generate_docs(_admin, program_name="admin")
+        assert "secret" not in result
+
+    def test_show_hidden_includes_hidden_command(self):
+        result = generate_docs(_admin, program_name="admin", show_hidden=True)
+        assert "secret" in result
+
+    def test_hidden_option_omitted_by_default(self):
+        result = generate_docs(_admin, program_name="admin")
+        # status subcommand has --verbose hidden option
+        assert "--verbose" not in result
+
+    def test_show_hidden_includes_hidden_option(self):
+        result = generate_docs(_admin, program_name="admin", show_hidden=True)
+        assert "--verbose" in result
+
+    def test_snapshot_show_hidden(self):
+        expected = (EXPECTED_DIR / "expected_admin_show_hidden.md").read_text()
+        result = generate_docs(_admin, program_name="admin", show_hidden=True)
+        assert result == expected
+
+
+class TestListSubcommands:
+    def test_list_subcommands_prepends_toc(self):
+        result = generate_docs(_root, program_name="root", list_subcommands=True)
+        assert "**Subcommands:**" in result
+
+    def test_toc_contains_links(self):
+        result = generate_docs(_root, program_name="root", list_subcommands=True)
+        assert "[admin](#admin)" in result
+        assert "[hello](#hello)" in result
+
+    def test_toc_links_include_short_help(self):
+        result = generate_docs(_root, program_name="root", list_subcommands=True)
+        assert "Admin commands." in result
+
+    def test_toc_hidden_commands_excluded_by_default(self):
+        result = generate_docs(_admin, program_name="admin", list_subcommands=True)
+        assert "[secret]" not in result
+
+    def test_toc_appears_before_subcommand_sections(self):
+        result = generate_docs(_root, program_name="root", list_subcommands=True)
+        toc_pos = result.index("**Subcommands:**")
+        admin_pos = result.index("## admin")
+        assert toc_pos < admin_pos
+
+    def test_toc_only_at_root_level(self):
+        # Admin subgroup should NOT get its own TOC listing
+        result = generate_docs(_root, program_name="root", list_subcommands=True)
+        assert result.count("**Subcommands:**") == 1
+
+    def test_full_command_path_toc_uses_path_anchor(self):
+        result = generate_docs(_root, program_name="root", list_subcommands=True, full_command_path=True)
+        assert "[admin](#root-admin)" in result
+        assert "[hello](#root-hello)" in result
+
+    def test_snapshot_list_subcommands(self):
+        expected = (EXPECTED_DIR / "expected_root_list_subcommands.md").read_text()
+        result = generate_docs(_root, program_name="root", list_subcommands=True)
+        assert result == expected
+
+
+class TestFullCommandPath:
+    def test_subcommand_headers_use_full_path(self):
+        result = generate_docs(_root, program_name="root", full_command_path=True)
+        assert "## root admin" in result
+        assert "## root hello" in result
+
+    def test_nested_subcommand_header_uses_full_path(self):
+        result = generate_docs(_root, program_name="root", full_command_path=True)
+        assert "### root admin reset" in result
+
+    def test_root_header_unchanged(self):
+        result = generate_docs(_root, program_name="root", full_command_path=True)
+        assert result.startswith("# root\n")
+
+
+class TestRemoveAsciiArt:
+    def test_removes_backslash_b_block(self):
+        result = generate_docs(_ascii_art, program_name="ascii-art", remove_ascii_art=True)
+        assert "===" not in result
+        assert "ASCII ART" not in result
+
+    def test_preserves_text_after_blank_line(self):
+        result = generate_docs(_ascii_art, program_name="ascii-art", remove_ascii_art=True)
+        assert "Regular description after the art." in result
+
+    def test_without_flag_preserves_backslash_b_content(self):
+        result = generate_docs(_ascii_art, program_name="ascii-art", remove_ascii_art=False)
+        assert "ASCII ART" in result
+
+    def test_snapshot_remove_ascii_art(self):
+        expected = (EXPECTED_DIR / "expected_ascii_art_removed.md").read_text()
+        result = generate_docs(_ascii_art, program_name="ascii-art", remove_ascii_art=True)
         assert result == expected

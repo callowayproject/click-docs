@@ -182,6 +182,7 @@ test = [
     { name = "pre-commit", version = "4.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pytest", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "pytest", version = "9.0.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "pytest-agent-digest" },
     { name = "pytest-asyncio", version = "1.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "pytest-asyncio", version = "1.3.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pytest-cov" },
@@ -208,6 +209,7 @@ test = [
     { name = "coverage" },
     { name = "pre-commit" },
     { name = "pytest" },
+    { name = "pytest-agent-digest", specifier = ">=0.3.1" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
 ]
@@ -1445,6 +1447,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d1/db/7ef3487e0fb0049ddb5ce41d3a49c235bf9ad299b6a25d5780a89f19230f/pytest-9.0.2.tar.gz", hash = "sha256:75186651a92bd89611d1d9fc20f0b4345fd827c41ccd5c299a868a05d70edf11", size = 1568901, upload-time = "2025-12-06T21:30:51.014Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3b/ab/b3226f0bd7cdcf710fbede2b3548584366da3b19b5021e74f5bde2a8fa3f/pytest-9.0.2-py3-none-any.whl", hash = "sha256:711ffd45bf766d5264d487b917733b453d917afd2b0ad65223959f59089f875b", size = 374801, upload-time = "2025-12-06T21:30:49.154Z" },
+]
+
+[[package]]
+name = "pytest-agent-digest"
+version = "0.3.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "pytest", version = "9.0.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0b/f8/3256526960418ce2108807bdb2601298f8d64b39ca69382a6e11e53fd153/pytest_agent_digest-0.3.1.tar.gz", hash = "sha256:7c3f6f886d5cccc7350409b31a46ab3a0930d93c8e5b1c4341b919ca903e1072", size = 143017, upload-time = "2026-03-21T17:47:09.525Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8b/85/79f4cbf7ad59b62664410d59d174e908c4e607ed099b0f8c4267fe72f4f3/pytest_agent_digest-0.3.1-py3-none-any.whl", hash = "sha256:b209b755b0e9076dec0e934a3ed583474c71c900f56d115214b9f62a1cfc1ca8", size = 9356, upload-time = "2026-03-21T17:47:08.173Z" },
 ]
 
 [[package]]

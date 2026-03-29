@@ -35,3 +35,52 @@ class NestedCommands:
 @click.option("--msg", help="Message.\f\nHidden text.")
 def special_types(fmt, level, ratio, date, infile, msg):
     """Command with various special types."""
+
+
+# ---------------------------------------------------------------------------
+# Phase 3 fixtures: nested groups, hidden commands/options, \b ASCII art
+# ---------------------------------------------------------------------------
+
+
+@click.command()
+@click.option("--force", is_flag=True, help="Force the reset.")
+def reset(force):
+    """Reset the system to defaults."""
+
+
+@click.command(hidden=True)
+def secret():
+    """Top-secret command."""
+
+
+@click.command()
+@click.option("--verbose", is_flag=True, hidden=True, help="Enable verbose output.")
+def status(verbose):
+    """Check system status."""
+
+
+@click.group()
+def admin():
+    """Admin commands."""
+
+
+admin.add_command(reset)
+admin.add_command(secret)
+admin.add_command(status)
+
+
+@click.group()
+def root():
+    """Root command with subgroups."""
+
+
+root.add_command(admin)
+root.add_command(hello)
+
+
+@click.command()
+def ascii_art():
+    """\b
+    ===  ASCII ART  ===
+
+    Regular description after the art."""

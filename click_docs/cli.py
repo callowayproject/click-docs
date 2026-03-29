@@ -29,7 +29,7 @@ from .loader import LoadError, load_command
     default=1,
     show_default=True,
     type=click.IntRange(1, 6),
-    help="Markdown header level for the command title (1–6).",
+    help="Markdown header level for the command title (1-6).",
 )
 @click.option(
     "--style",
@@ -44,6 +44,43 @@ from .loader import LoadError, load_command
     metavar="FILE",
     help="Write output to FILE instead of stdout.",
 )
+@click.option(
+    "--depth",
+    default=None,
+    type=click.IntRange(min=0),
+    metavar="N",
+    help="Maximum subcommand recursion depth (0=root only; default=unlimited).",
+)
+@click.option(
+    "--exclude",
+    multiple=True,
+    metavar="PATH",
+    help="Dotted command path to exclude (e.g. root.admin.reset). Repeatable.",
+)
+@click.option(
+    "--show-hidden",
+    is_flag=True,
+    default=False,
+    help="Include commands and options marked hidden=True.",
+)
+@click.option(
+    "--list-subcommands",
+    is_flag=True,
+    default=False,
+    help="Prepend a bulleted TOC of subcommands at the root level.",
+)
+@click.option(
+    "--remove-ascii-art",
+    is_flag=True,
+    default=False,
+    help=r"Strip \b-prefixed blocks (ASCII art) from help text.",
+)
+@click.option(
+    "--full-command-path",
+    is_flag=True,
+    default=False,
+    help="Use the full command path in headers (e.g. 'cli admin' instead of 'admin').",
+)
 def cli(
     module_path: str,
     command_name: str,
@@ -51,6 +88,12 @@ def cli(
     header_depth: int,
     style: str,
     output: str | None,
+    depth: int | None,
+    exclude: tuple[str, ...],
+    show_hidden: bool,
+    list_subcommands: bool,
+    remove_ascii_art: bool,
+    full_command_path: bool,
 ) -> None:
     """
     Generate Markdown documentation for a Click application.
@@ -63,7 +106,18 @@ def cli(
         click.echo(f"Error: {exc}", err=True)
         sys.exit(1)
 
-    markdown = generate_docs(command, program_name=program_name, header_depth=header_depth, style=style)
+    markdown = generate_docs(
+        command,
+        program_name=program_name,
+        header_depth=header_depth,
+        style=style,
+        depth=depth,
+        exclude=exclude,
+        show_hidden=show_hidden,
+        list_subcommands=list_subcommands,
+        remove_ascii_art=remove_ascii_art,
+        full_command_path=full_command_path,
+    )
 
     if output is None:
         click.echo(markdown, nl=False)
