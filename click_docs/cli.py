@@ -4,14 +4,52 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import click
+from click.core import ParameterSource
 
+from .config import find_config
 from .generator import generate_docs
 from .loader import LoadError, load_command
 
+# Maps Python parameter names (underscores) to pyproject.toml keys (hyphens).
+_PARAM_TO_CONFIG_KEY: dict[str, str] = {
+    "command_name": "command-name",
+    "program_name": "program-name",
+    "header_depth": "header-depth",
+    "style": "style",
+    "output": "output",
+    "depth": "depth",
+    "show_hidden": "show-hidden",
+    "list_subcommands": "list-subcommands",
+    "remove_ascii_art": "remove-ascii-art",
+    "full_command_path": "full-command-path",
+}
+
+
+def _apply_config(ctx: click.Context, config: dict[str, Any], kwargs: dict[str, Any]) -> dict[str, Any]:
+    """Override defaulted CLI params with values from config.
+
+    Args:
+        ctx: The Click context for the current invocation.
+        config: Dict of [tool.click-docs] values from pyproject.toml.
+        kwargs: Current parameter values keyed by Python name (underscores).
+
+    Returns:
+        Updated kwargs dict with config values applied where CLI used its default.
+    """
+    result = dict(kwargs)
+    for param, config_key in _PARAM_TO_CONFIG_KEY.items():
+        if ctx.get_parameter_source(param) == ParameterSource.DEFAULT and config_key in config:
+            result[param] = config[config_key]
+    if ctx.get_parameter_source("exclude") == ParameterSource.DEFAULT and "exclude" in config:
+        result["exclude"] = tuple(config["exclude"])
+    return result
+
 
 @click.command()
+@click.pass_context
 @click.argument("module_path")
 @click.option(
     "--command-name",
@@ -82,6 +120,7 @@ from .loader import LoadError, load_command
     help="Use the full command path in headers (e.g. 'cli admin' instead of 'admin').",
 )
 def cli(
+    ctx: click.Context,
     module_path: str,
     command_name: str,
     program_name: str | None,
@@ -100,30 +139,48 @@ def cli(
 
     MODULE_PATH is a file system path to the Python module containing the Click command.
     """
+    resolved = _apply_config(
+        ctx,
+        find_config(),
+        {
+            "command_name": command_name,
+            "program_name": program_name,
+            "header_depth": header_depth,
+            "style": style,
+            "output": output,
+            "depth": depth,
+            "exclude": exclude,
+            "show_hidden": show_hidden,
+            "list_subcommands": list_subcommands,
+            "remove_ascii_art": remove_ascii_art,
+            "full_command_path": full_command_path,
+        },
+    )
+
     try:
-        command = load_command(module_path, command_name)
+        command = load_command(module_path, resolved["command_name"])
     except LoadError as exc:
         click.echo(f"Error: {exc}", err=True)
         sys.exit(1)
 
     markdown = generate_docs(
         command,
-        program_name=program_name,
-        header_depth=header_depth,
-        style=style,
-        depth=depth,
-        exclude=exclude,
-        show_hidden=show_hidden,
-        list_subcommands=list_subcommands,
-        remove_ascii_art=remove_ascii_art,
-        full_command_path=full_command_path,
+        program_name=resolved["program_name"],
+        header_depth=resolved["header_depth"],
+        style=resolved["style"],
+        depth=resolved["depth"],
+        exclude=resolved["exclude"],
+        show_hidden=resolved["show_hidden"],
+        list_subcommands=resolved["list_subcommands"],
+        remove_ascii_art=resolved["remove_ascii_art"],
+        full_command_path=resolved["full_command_path"],
     )
 
-    if output is None:
+    if resolved["output"] is None:
         click.echo(markdown, nl=False)
         return
 
-    out_path = Path(output)
+    out_path = Path(resolved["output"])
     if not out_path.parent.exists():
         click.echo(f"Error: Output directory {str(out_path.parent)!r} does not exist.", err=True)
         sys.exit(1)

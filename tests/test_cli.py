@@ -212,3 +212,62 @@ class TestCliPhase3:
         assert result.exit_code == 0
         assert "## root admin" in result.output
         assert "## root hello" in result.output
+
+
+class TestCliPhase4:
+    def test_config_header_depth_used_when_no_cli_flag(self, runner, monkeypatch):
+        """Config header-depth is applied when --header-depth is not passed."""
+        monkeypatch.setattr("click_docs.cli.find_config", lambda: {"header-depth": 3})
+        result = runner.invoke(cli, [FIXTURE_APP])
+        assert result.exit_code == 0
+        assert "### cli" in result.output
+
+    def test_cli_header_depth_overrides_config(self, runner, monkeypatch):
+        """CLI --header-depth overrides config header-depth."""
+        monkeypatch.setattr("click_docs.cli.find_config", lambda: {"header-depth": 3})
+        result = runner.invoke(cli, [FIXTURE_APP, "--header-depth", "2"])
+        assert result.exit_code == 0
+        assert "## cli" in result.output
+        assert "### cli" not in result.output
+
+    def test_config_style_used_when_no_cli_flag(self, runner, monkeypatch):
+        """Config style is applied when --style is not passed."""
+        monkeypatch.setattr("click_docs.cli.find_config", lambda: {"style": "table"})
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "hello"])
+        assert result.exit_code == 0
+        assert "| Name | Type | Description |" in result.output
+
+    def test_cli_style_overrides_config(self, runner, monkeypatch):
+        """CLI --style overrides config style."""
+        monkeypatch.setattr("click_docs.cli.find_config", lambda: {"style": "table"})
+        result = runner.invoke(cli, [FIXTURE_APP, "--style", "plain"])
+        assert result.exit_code == 0
+        assert "```text" in result.output
+
+    def test_config_show_hidden_used_when_no_cli_flag(self, runner, monkeypatch):
+        """Config show-hidden is applied when --show-hidden is not passed."""
+        monkeypatch.setattr("click_docs.cli.find_config", lambda: {"show-hidden": True})
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "admin"])
+        assert result.exit_code == 0
+        assert "secret" in result.output
+
+    def test_config_exclude_used_when_no_cli_flag(self, runner, monkeypatch):
+        """Config exclude list is applied when --exclude is not passed."""
+        monkeypatch.setattr("click_docs.cli.find_config", lambda: {"exclude": ["root.admin"]})
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "root"])
+        assert result.exit_code == 0
+        assert "## admin" not in result.output
+
+    def test_cli_exclude_overrides_config(self, runner, monkeypatch):
+        """CLI --exclude overrides config exclude list entirely."""
+        monkeypatch.setattr("click_docs.cli.find_config", lambda: {"exclude": ["root.admin"]})
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "root", "--exclude", "root.hello"])
+        assert result.exit_code == 0
+        assert "## admin" in result.output
+        assert "## hello" not in result.output
+
+    def test_no_error_when_config_empty(self, runner, monkeypatch):
+        """Tool runs normally when find_config returns an empty dict."""
+        monkeypatch.setattr("click_docs.cli.find_config", lambda: {})
+        result = runner.invoke(cli, [FIXTURE_APP])
+        assert result.exit_code == 0
