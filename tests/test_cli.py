@@ -95,3 +95,45 @@ class TestCliErrors:
         result = runner.invoke(cli, ["nonexistent/path.py"])
         assert "Traceback" not in result.output
         assert "Traceback" not in (result.stderr or "")
+
+
+class TestCliFormattingOptions:
+    def test_program_name_overrides_heading(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--program-name", "myapp"])
+        assert result.exit_code == 0
+        assert "# myapp" in result.output
+
+    def test_program_name_appears_in_usage(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--program-name", "myapp"])
+        assert result.exit_code == 0
+        assert "myapp" in result.output
+
+    def test_header_depth_2_produces_double_hash(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--header-depth", "2"])
+        assert result.exit_code == 0
+        assert "## cli" in result.output
+
+    def test_header_depth_default_is_1(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP])
+        assert result.exit_code == 0
+        assert "# cli" in result.output
+
+    def test_style_table_produces_table(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "hello", "--style", "table"])
+        assert result.exit_code == 0
+        assert "| Name | Type | Description |" in result.output
+
+    def test_style_plain_produces_code_block(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--style", "plain"])
+        assert result.exit_code == 0
+        assert "```text" in result.output
+
+    def test_style_invalid_exits_with_error(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--style", "invalid"])
+        assert result.exit_code != 0
+
+    def test_style_table_omits_help_option(self, runner):
+        result = runner.invoke(cli, [FIXTURE_APP, "--command-name", "special_types", "--style", "table"])
+        assert result.exit_code == 0
+        assert "| Name | Type | Description |" in result.output
+        assert "--help" not in result.output

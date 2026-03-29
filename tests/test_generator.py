@@ -68,3 +68,96 @@ class TestGenerateDocs:
         assert lines[0] == "# no-desc"
         assert lines[1] == ""
         assert lines[2] == "**Usage:**"
+
+
+@click.command()
+@click.option("--fmt", type=click.Choice(["json", "yaml", "toml"]), help="Output format.")
+@click.option("--level", type=click.IntRange(0, 10), help="Log level.")
+@click.option("--ratio", type=click.FloatRange(0.0, 1.0), help="Ratio value.")
+@click.option("--date", type=click.DateTime(["%Y-%m-%d", "%d/%m/%Y"]), help="A date.")
+@click.option("--infile", type=click.File("r"), help="Input file.")
+@click.option("--msg", help="Message.\f\nHidden text.")
+def special_types_cmd(fmt, level, ratio, date, infile, msg):
+    """Command with various special types."""
+
+
+class TestHeaderDepth:
+    def test_depth_1_produces_single_hash(self):
+        result = generate_docs(hello, program_name="hello", header_depth=1)
+        assert result.startswith("# hello\n")
+
+    def test_depth_2_produces_double_hash(self):
+        result = generate_docs(hello, program_name="hello", header_depth=2)
+        assert result.startswith("## hello\n")
+
+    def test_depth_3_produces_triple_hash(self):
+        result = generate_docs(hello, program_name="hello", header_depth=3)
+        assert result.startswith("### hello\n")
+
+    def test_depth_6_produces_six_hashes(self):
+        result = generate_docs(hello, program_name="hello", header_depth=6)
+        assert result.startswith("###### hello\n")
+
+    def test_depth_default_is_1(self):
+        result = generate_docs(hello, program_name="hello")
+        assert result.startswith("# hello\n")
+
+
+class TestStyleTable:
+    def test_produces_markdown_table_header(self):
+        result = generate_docs(hello, program_name="hello", style="table")
+        assert "| Name | Type | Description |" in result
+
+    def test_table_separator_row_present(self):
+        result = generate_docs(hello, program_name="hello", style="table")
+        assert "| --- | --- | --- |" in result
+
+    def test_omits_help_option(self):
+        result = generate_docs(hello, program_name="hello", style="table")
+        assert "--help" not in result
+
+    def test_shows_option_names(self):
+        result = generate_docs(hello, program_name="hello", style="table")
+        assert "--count" in result
+        assert "--name" in result
+
+    def test_plain_style_still_produces_code_block(self):
+        result = generate_docs(hello, program_name="hello", style="plain")
+        assert "```text" in result
+        assert "| Name | Type | Description |" not in result
+
+    def test_choice_type_shows_constraint(self):
+        result = generate_docs(special_types_cmd, style="table")
+        assert "one of: json, yaml, toml" in result
+
+    def test_intrange_shows_bounds(self):
+        result = generate_docs(special_types_cmd, style="table")
+        assert "0<=x<=10" in result
+
+    def test_floatrange_shows_bounds(self):
+        result = generate_docs(special_types_cmd, style="table")
+        assert "0.0<=x<=1.0" in result
+
+    def test_datetime_shows_formats(self):
+        result = generate_docs(special_types_cmd, style="table")
+        assert "%Y-%m-%d" in result
+        assert "%d/%m/%Y" in result
+
+    def test_file_shows_mode(self):
+        result = generate_docs(special_types_cmd, style="table")
+        assert "file (r)" in result
+
+    def test_ff_escape_truncated_in_table(self):
+        result = generate_docs(special_types_cmd, style="table")
+        assert "Hidden text" not in result
+        assert "Message." in result
+
+    def test_snapshot_table(self):
+        expected = (EXPECTED_DIR / "expected_special_types_table.md").read_text()
+        result = generate_docs(special_types_cmd, program_name="special-types", style="table")
+        assert result == expected
+
+    def test_snapshot_plain(self):
+        expected = (EXPECTED_DIR / "expected_special_types_plain.md").read_text()
+        result = generate_docs(special_types_cmd, program_name="special-types", style="plain")
+        assert result == expected

@@ -20,12 +20,38 @@ from .loader import LoadError, load_command
     help="Dotted attribute path to the Click command object.",
 )
 @click.option(
+    "--program-name",
+    default=None,
+    help="Display name for the command in headings and usage lines.",
+)
+@click.option(
+    "--header-depth",
+    default=1,
+    show_default=True,
+    type=click.IntRange(1, 6),
+    help="Markdown header level for the command title (1–6).",
+)
+@click.option(
+    "--style",
+    default="plain",
+    show_default=True,
+    type=click.Choice(["plain", "table"]),
+    help="Options rendering style.",
+)
+@click.option(
     "--output",
     default=None,
     metavar="FILE",
     help="Write output to FILE instead of stdout.",
 )
-def cli(module_path: str, command_name: str, output: str | None) -> None:
+def cli(
+    module_path: str,
+    command_name: str,
+    program_name: str | None,
+    header_depth: int,
+    style: str,
+    output: str | None,
+) -> None:
     """
     Generate Markdown documentation for a Click application.
 
@@ -37,7 +63,7 @@ def cli(module_path: str, command_name: str, output: str | None) -> None:
         click.echo(f"Error: {exc}", err=True)
         sys.exit(1)
 
-    markdown = generate_docs(command)
+    markdown = generate_docs(command, program_name=program_name, header_depth=header_depth, style=style)
 
     if output is None:
         click.echo(markdown, nl=False)
