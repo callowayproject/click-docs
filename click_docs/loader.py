@@ -46,7 +46,7 @@ def load_command(module_path: str, command_name: str = "cli") -> click.BaseComma
 
 def _load_module_from_path(path: Path) -> Any:
     """Import a module from a file path and return the module object."""
-    module_name = "_click_docs_loaded_module"
+    module_name = f"_click_docs_{abs(hash(path.resolve())):x}"
     spec = importlib.util.spec_from_file_location(module_name, path)
     if spec is None or spec.loader is None:  # pragma: no cover
         raise LoadError(f"Cannot load module from {str(path)!r}.")
@@ -55,6 +55,7 @@ def _load_module_from_path(path: Path) -> Any:
     try:
         spec.loader.exec_module(module)  # type: ignore[union-attr]
     except Exception as exc:
+        sys.modules.pop(module_name, None)
         raise LoadError(f"Error importing {str(path)!r}: {exc}") from exc
     return module
 

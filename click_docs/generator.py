@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import inspect
 import re
-from contextlib import ExitStack, contextmanager
+from contextlib import contextmanager, nullcontext
 from typing import Iterator
 
 import click
@@ -45,26 +45,23 @@ def generate_docs(
     if program_name is None:
         program_name = command.name or ""
     exclude_set = frozenset(exclude)
-    lines = list(
-        _recursively_make_command_docs(
-            command=command,
-            prog_name=program_name,
-            parent_ctx=None,
-            header_depth=header_depth,
-            style=style,
-            current_depth=0,
-            max_depth=depth,
-            exclude_set=exclude_set,
-            show_hidden=show_hidden,
-            list_subcommands=list_subcommands,
-            remove_ascii_art=remove_ascii_art,
-            full_command_path=full_command_path,
-            command_path=program_name,
-        )
-    )
-    # Collapse consecutive blank lines to a single blank line.
+    # Collapse consecutive blank lines to a single blank line while iterating.
     deduped: list[str] = []
-    for line in lines:
+    for line in _recursively_make_command_docs(
+        command=command,
+        prog_name=program_name,
+        parent_ctx=None,
+        header_depth=header_depth,
+        style=style,
+        current_depth=0,
+        max_depth=depth,
+        exclude_set=exclude_set,
+        show_hidden=show_hidden,
+        list_subcommands=list_subcommands,
+        remove_ascii_art=remove_ascii_art,
+        full_command_path=full_command_path,
+        command_path=program_name,
+    ):
         if line == "" and deduped and deduped[-1] == "":  # NOQA: PLC1901
             continue
         deduped.append(line)
@@ -199,21 +196,15 @@ def _make_title(
 
 
 def _make_description(ctx: click.Context, remove_ascii_art: bool = False) -> Iterator[str]:
-    """
-    Yield help text lines, truncating at ``\\f``.
-
-    Generates an iterator that provides a processed description text for a given Click command context. If
-    `remove_ascii_art` is set to True, ASCII art blocks (delimited by the `\b` marker and a subsequent blank
-    line) are excluded from the output.
+    """Yield help text lines, truncating at ``\\f``.
 
     Args:
-        ctx: The context of the Click command containing usage information or help text.
-        remove_ascii_art: A flag to indicate whether ASCII art blocks should be removed
-            from the processed output. It strips the ``\\b``-prefixed block (from the opening ``\\b`` line up to and
-            including the next blank line).Defaults to False.
+        ctx: The Click command context.
+        remove_ascii_art: Strip ``\\b``-prefixed ASCII art blocks (first ``\\b`` line
+            through the next blank line). Defaults to False.
 
     Yields:
-        str: Processed lines from the command's help text, optionally excluding ASCII art.
+        str: Lines from the command's help text.
     """
     help_text = ctx.command.help or ctx.command.short_help
     if not help_text:
@@ -230,7 +221,7 @@ def _make_description(ctx: click.Context, remove_ascii_art: bool = False) -> Ite
     in_ascii_art = False
     for i, line in enumerate(help_text.splitlines()):
         if not in_ascii_art:
-            if i == 0 and line.strip() == "\b":
+            if i == 0 and line.strip() == "\b":  # \b blocks only appear at the start of help text
                 in_ascii_art = True
                 continue
             yield line
@@ -242,19 +233,13 @@ def _make_description(ctx: click.Context, remove_ascii_art: bool = False) -> Ite
 
 
 def _make_usage(ctx: click.Context) -> Iterator[str]:
-    """
-    Yield a fenced-code usage block.
-
-    This function utilizes the `click` library's context object to create a well-formatted usage message for
-    a command, including its command path and usage details. The output is formatted with Markdown, rendering as a
-    highlighted code block for easy display in documentation or CLI output.
+    """Yield a fenced-code usage block.
 
     Args:
-        ctx: The context provided by the `click` library, which contains information about the current command and
-            its configurations.
+        ctx: The Click command context.
 
     Yields:
-        str: Formatted lines of the usage message, including Markdown elements for code highlighting and spacing.
+        str: Markdown lines forming the ``**Usage:**`` fenced block.
     """
     formatter = ctx.make_formatter()
     pieces = ctx.command.collect_usage_pieces(ctx)
@@ -295,10 +280,8 @@ def _make_options_plain(ctx: click.Context, show_hidden: bool = False) -> Iterat
 
     Help text is truncated at ``\\f`` before being passed to the formatter.
     """
-    with ExitStack() as stack:
-        if show_hidden:
-            stack.enter_context(_unhide_options(ctx))
-
+    ctx_mgr = _unhide_options(ctx) if show_hidden else nullcontext()
+    with ctx_mgr:
         records = []
         for param in ctx.command.get_params(ctx):
             record = param.get_help_record(ctx)
@@ -366,21 +349,13 @@ def _format_param_type(param_type: click.ParamType) -> str:
 
 
 def _format_range(param_type: click.IntRange | click.FloatRange) -> str:
-    """
-    Render an IntRange or FloatRange as a bounds expression like ``0<=x<=10``.
-
-    Generates a string representation of a numeric range based on the given
-    parameter type. The range format includes minimum and maximum boundaries
-    with appropriate open or closed intervals, along with the midpoint notation
-    'x'. This utility function is specifically designed for Click's IntRange
-    or FloatRange parameter types.
+    """Render an IntRange or FloatRange as a bounds expression like ``0<=x<=10``.
 
     Args:
-        param_type: The range object defining the minimum and maximum bounds,
-            as well as whether the intervals are open or closed.
+        param_type: The range object with ``min``, ``max``, ``min_open``, and ``max_open``.
 
     Returns:
-        A formatted range string representing the numeric bounds and interval behavior.
+        A bounds string, e.g. ``0<=x``, ``x<=10``, or ``0<=x<=10``.
     """
     min_op = "<" if getattr(param_type, "min_open", False) else "<="
     max_op = "<" if getattr(param_type, "max_open", False) else "<="

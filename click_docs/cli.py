@@ -14,6 +14,8 @@ from .generator import generate_docs
 from .loader import LoadError, load_command
 
 # Maps Python parameter names (underscores) to pyproject.toml keys (hyphens).
+# Note: "exclude" is intentionally absent — it needs tuple() coercion and is handled
+# as a special case in _apply_config.
 _PARAM_TO_CONFIG_KEY: dict[str, str] = {
     "command_name": "command-name",
     "program_name": "program-name",
@@ -182,7 +184,7 @@ def cli(
 
     out_path = Path(resolved["output"])
     if not out_path.parent.exists():
-        click.echo(f"Error: Output directory {str(out_path.parent)!r} does not exist.", err=True)
+        click.echo(f"Error: Output directory {out_path.parent!r} does not exist.", err=True)
         sys.exit(1)
 
     out_path.write_text(markdown, encoding="utf-8")
