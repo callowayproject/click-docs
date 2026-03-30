@@ -52,3 +52,11 @@ class TestLoadCommand:
         """An attribute that is not a Click command raises LoadError."""
         with pytest.raises(LoadError, match="not a Click command"):
             load_command(FIXTURE_APP, command_name="NOT_A_COMMAND")
+
+    def test_module_with_relative_imports_loads_successfully(self):
+        """A module that uses relative imports is loaded without error."""
+        import click
+
+        cmd = load_command("tests/app/relative_pkg/cli.py")
+        assert isinstance(cmd, click.Command)
+        assert cmd.name == "cli"
