@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/development/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/reference/cli-reference/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/reference/api/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/reference/api/cli/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/reference/api/config/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/reference/api/generator/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/reference/api/loader/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/tutorials/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/tutorials/first-cli-documentation/</loc>
+      </url>
+      <url>
+        <loc>https://callowayproject.github.io/click-docs/tutorials/real-world-cli/</loc>
+      </url>
+</urlset>
