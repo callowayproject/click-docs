@@ -11,6 +11,12 @@ FIXTURE_APP = "tests/app/cli.py"
 EXPECTED_DIR = Path(__file__).parent / "app"
 
 
+@pytest.fixture(autouse=True)
+def no_config(monkeypatch):
+    """Prevent tests from picking up the real pyproject.toml [tool.click-docs] config."""
+    monkeypatch.setattr("click_docs.cli.find_config", lambda: {})
+
+
 @pytest.fixture
 def runner():
     return CliRunner()
