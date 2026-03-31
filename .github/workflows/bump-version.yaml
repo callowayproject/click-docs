@@ -2,7 +2,7 @@ name: Bump the version on merge
 on:
   pull_request:
     types: [closed]
-    branches: [main]
+    branches: [master, main]
 
 jobs:
   bump-version:

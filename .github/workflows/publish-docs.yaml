@@ -4,7 +4,9 @@ concurrency: docs
 
 on:
   push:
-    branches: [ main]
+    branches:
+      - master
+      - main
 
 jobs:
   publish-docs:
@@ -16,6 +18,7 @@ jobs:
       pages: write
 
     steps:
+    - uses: actions/configure-pages@v5
     - name: Checkout
       uses: actions/checkout@v6
       with:
@@ -38,5 +41,11 @@ jobs:
       run: uv sync --group docs
 
     - name: Build and publish docs
-      run: uv run mkdocs gh-deploy --strict
-  
+      run: uv run zensical build --clean
+
+    - uses: actions/upload-pages-artifact@v4
+      with:
+        path: site
+
+    - uses: actions/deploy-pages@v4
+      id: deployment
