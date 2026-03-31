@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "click_docs"
+name = "click-docs"
 description = "Generate Markdown documentation for your Click application"
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -22,7 +22,7 @@ classifiers = [
     "Topic :: Software Development :: Documentation",
     "Topic :: Text Processing :: Markup :: Markdown",
 ]
-keywords = ["click_docs"]
+keywords = ["click", "documentation", "Markdown"]
 dynamic = ["version"]
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
