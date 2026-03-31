@@ -1,0 +1,1440 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generate Markdown documentation for your Click application.">
+      
+      
+        <meta name="author" content="Corey Oordt">
+      
+      
+        <link rel="canonical" href="https://callowayproject.github.io/click-docs/tutorials/real-world-cli/">
+      
+      
+        <link rel="prev" href="../first-cli-documentation/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.30">
+    
+    
+      
+        <title>Documenting a Real-World CLI - Click Docs</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/classic/main.320d0ab1.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/classic/palette.7dc9a0ad.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/css/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/css/mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../assets/css/cards.css">
+    
+      <link rel="stylesheet" href="../../assets/css/field-list.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-label="Navigation"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#documenting-a-real-world-cli" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Click Docs" class="md-header__button md-logo" aria-label="Click Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="Navigation">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Click Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Documenting a Real-World CLI
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search" aria-label="Search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Click Docs" class="md-nav__button md-logo" aria-label="Click Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Click Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Click Docs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    click-docs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../reference/api/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Click API Reference
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../first-cli-documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your First CLI Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+        
+        <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+        
+        
+          
+        
+        
+          <label class="md-nav__link md-nav__link--active" for="__toc">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documenting a Real-World CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documenting a Real-World CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-extended-deployer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The extended deployer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-run-it-and-see-what-you-have" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Run it and see what you have
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-nested-subgroups-work-automatically" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Nested subgroups work automatically
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-limit-documentation-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Limit documentation depth
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-exclude-specific-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Exclude specific commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-reveal-hidden-commands-and-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Reveal hidden commands and options
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-switch-to-table-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Switch to table style
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-add-a-subcommand-table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Add a subcommand table of contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-clean-up-the-ascii-art" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Clean up the ASCII art
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-customize-the-header-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Customize the header hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-persist-your-settings-in-pyprojecttoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Persist your settings in pyproject.toml
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-youve-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What you've learned
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Click Docs
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+<h1 id="documenting-a-real-world-cli">Documenting a Real-World CLI</h1>
+<p><a href="../first-cli-documentation/">Tutorial 1</a> covered the basics: install, point at a file, get Markdown. Real CLIs are more complicated. They have nested subgroups, admin commands you don't want in the public docs, options with rich types like ranges and choices, and sometimes a splash of ASCII art in the help text.</p>
+<p>This tutorial walks through all of that using an extended version of the <code>deployer</code> tool from Tutorial 1.</p>
+<p><strong>What you'll build:</strong> A fully documented reference for a multi-group CLI, configured entirely through <code>pyproject.toml</code> so you never need to type the same flags twice.</p>
+<div class="admonition note">
+<p class="admonition-title">Prerequisites</p>
+<p>Complete <a href="../first-cli-documentation/">Tutorial 1</a> first, or at minimum have click-docs installed (<code>pip install click-docs</code>).</p>
+</div>
+<hr />
+<h2 id="1-the-extended-deployer">1. The extended deployer</h2>
+<p>Replace the contents of <code>deployer.py</code> with this expanded version. It adds an ASCII art banner, a <code>logs</code> command with richer option types, a <code>config</code> subgroup, and a hidden <code>admin</code> subgroup:</p>
+<div class="highlight"><span class="filename">deployer.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;\b</span>
+<span class="sd">     ____             _</span>
+<span class="sd">    |  _ \  ___ _ __ | | ___  _   _  ___ _ __</span>
+<span class="sd">    | | | |/ _ \ &#39;_ \| |/ _ \| | | |/ _ \ &#39;__|</span>
+<span class="sd">    | |_| |  __/ |_) | | (_) | |_| |  __/ |</span>
+<span class="sd">    |____/ \___| .__/|_|\___/ \__, |\___|_|</span>
+<span class="sd">               |_|            |___/</span>
+
+<span class="sd">    A tool for deploying and managing web applications.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;app_name&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span> <span class="s2">&quot;production&quot;</span><span class="p">]),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Target deployment environment.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="s2">&quot;-v&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;latest&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Application version tag to deploy.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--dry-run&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Preview the deployment without executing it.&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--workers&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">IntRange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span>
+    <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of parallel deployment workers.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deploy</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">,</span> <span class="n">workers</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deploy APP_NAME to the target environment.&quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deploying </span><span class="si">{</span><span class="n">app_name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">) to </span><span class="si">{</span><span class="n">env</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">workers</span><span class="si">}</span><span class="s2"> workers...&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;app_name&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+    <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span> <span class="s2">&quot;production&quot;</span><span class="p">]),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment to roll back.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rollback</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Roll back APP_NAME to its previous version.&quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rolling back </span><span class="si">{</span><span class="n">app_name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">env</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;app_name&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span> <span class="s2">&quot;production&quot;</span><span class="p">]),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment to check status for.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check the deployment status of APP_NAME.&quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Status for </span><span class="si">{</span><span class="n">app_name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">env</span><span class="si">}</span><span class="s2">: running&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;app_name&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span> <span class="s2">&quot;production&quot;</span><span class="p">]),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment to fetch logs from.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--lines&quot;</span><span class="p">,</span> <span class="s2">&quot;-n&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">IntRange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+    <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of log lines to retrieve.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--format&quot;</span><span class="p">,</span> <span class="s2">&quot;fmt&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;structured&quot;</span><span class="p">]),</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output format for log entries.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--follow&quot;</span><span class="p">,</span> <span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Stream logs in real time.&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--debug-token&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Internal token for debug mode.&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">logs</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="n">follow</span><span class="p">,</span> <span class="n">debug_token</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stream or display recent logs for APP_NAME.&quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fetching </span><span class="si">{</span><span class="n">lines</span><span class="si">}</span><span class="s2"> lines from </span><span class="si">{</span><span class="n">app_name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">env</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">config</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manage per-environment application configuration.&quot;&quot;&quot;</span>
+
+
+<span class="nd">@config</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;set&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;key&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span> <span class="s2">&quot;production&quot;</span><span class="p">]),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Target environment for the config entry.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">config_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set configuration KEY to VALUE.&quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Set </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">env</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@config</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;get&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;key&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span> <span class="s2">&quot;production&quot;</span><span class="p">]),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment to read config from.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">config_get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current value of configuration KEY.&quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Getting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">env</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@config</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;staging&quot;</span><span class="p">,</span> <span class="s2">&quot;production&quot;</span><span class="p">]),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment to list config for.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--format&quot;</span><span class="p">,</span> <span class="s2">&quot;fmt&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;env&quot;</span><span class="p">]),</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output format.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">config_list</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">fmt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List all configuration entries for the environment.&quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Config for </span><span class="si">{</span><span class="n">env</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">admin</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal admin commands. Not for regular users.&quot;&quot;&quot;</span>
+
+
+<span class="nd">@admin</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--force&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Skip the confirmation prompt.&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">purge</span><span class="p">(</span><span class="n">force</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Purge all deployment history.&quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Purging deployment history...&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@admin</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">nuke</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Irreversibly destroy all deployment data and configuration.&quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Done.&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>A few things worth noticing in this code:</p>
+<ul>
+<li>The root <code>cli</code> docstring starts with <code>\b</code>. That's how Click marks a no-wrap block — it's the conventional way to include ASCII art in help text.</li>
+<li><code>logs</code> uses <code>click.IntRange(1, 1000)</code> and <code>click.Choice(...)</code> — richer types that click-docs knows how to render.</li>
+<li><code>--debug-token</code> has <code>hidden=True</code>. It won't appear in the docs by default.</li>
+<li>The <code>admin</code> group itself has <code>hidden=True</code>. The entire subgroup and everything inside it is invisible unless you ask for it.</li>
+</ul>
+<hr />
+<h2 id="2-run-it-and-see-what-you-have">2. Run it and see what you have</h2>
+<p>Start with a plain run to get the baseline output:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer
+</code></pre></div>
+<p>You'll see the full recursive documentation — root group, then <code>config</code>, <code>deploy</code>, <code>logs</code>, <code>rollback</code>, <code>status</code> in alphabetical order, followed by <code>config</code>'s three subcommands (<code>get</code>, <code>list</code>, <code>set</code>). The <code>admin</code> group is nowhere to be found because it's hidden.</p>
+<p>The default output works, but it has two rough edges we'll fix in this tutorial:</p>
+<ol>
+<li>The root section opens with the raw ASCII art banner, which looks odd in Markdown.</li>
+<li>The hidden <code>admin</code> group might be something you actually want in an internal reference.</li>
+</ol>
+<p>Let's work through each feature.</p>
+<hr />
+<h2 id="3-nested-subgroups-work-automatically">3. Nested subgroups work automatically</h2>
+<p>No special flags needed for the <code>config</code> group. click-docs recurses into every subgroup it finds, incrementing the header level at each depth. In your output you'll see:</p>
+<div class="highlight"><pre><span></span><code><span class="gu">## config</span>
+
+Manage per-environment application configuration.
+
+<span class="gs">**Usage:**</span>
+
+<span class="sb">```text</span>
+deployer config [OPTIONS] COMMAND [ARGS]...
+<span class="sb">```</span>
+
+<span class="gs">**Options:**</span>
+
+<span class="sb">```text</span>
+  --help  Show this message and exit.
+<span class="sb">```</span>
+
+<span class="gu">### get</span>
+
+Get the current value of configuration KEY.
+
+...
+
+<span class="gu">### list</span>
+
+List all configuration entries for the environment.
+
+...
+
+<span class="gu">### set</span>
+
+Set configuration KEY to VALUE.
+
+...
+</code></pre></div>
+<p><code>config</code> gets a level-2 heading, its subcommands get level-3. If <code>config</code> had its own nested groups, those would be level-4, and so on.</p>
+<hr />
+<h2 id="4-limit-documentation-depth">4. Limit documentation depth</h2>
+<p>Sometimes you don't want to document every level. Maybe <code>config</code>'s subcommands are simple enough that a single-paragraph description of the group is all users need, or you're generating a high-level overview for a README.</p>
+<p>Use <code>--depth</code> to cap how deep the recursion goes. Depth is measured from the root:</p>
+<table>
+<thead>
+<tr>
+<th><code>--depth</code> value</th>
+<th>What's documented</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>Root command only</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>Root + direct subcommands (no sub-subcommands)</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>Root + two levels deep</td>
+</tr>
+<tr>
+<td><em>(omitted)</em></td>
+<td>Unlimited</td>
+</tr>
+</tbody>
+</table>
+<p>A depth-0 run — just the root:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--depth<span class="w"> </span><span class="m">0</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="gh"># deployer</span>
+
+ ____             _
+|  _ \  ___ ...
+
+A tool for deploying and managing web applications.
+
+<span class="gs">**Usage:**</span>
+
+<span class="sb">```text</span>
+deployer [OPTIONS] COMMAND [ARGS]...
+<span class="sb">```</span>
+
+<span class="gs">**Options:**</span>
+
+<span class="sb">```text</span>
+  --help  Show this message and exit.
+<span class="sb">```</span>
+</code></pre></div>
+<p>A depth-1 run — root and its direct subcommands, but not <code>config get</code>, <code>config list</code>, or <code>config set</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span>
+</code></pre></div>
+<p>You'll see <code>config</code>, <code>deploy</code>, <code>logs</code>, <code>rollback</code>, and <code>status</code> with their own usage and options, but the <code>config</code> subcommands won't appear.</p>
+<hr />
+<h2 id="5-exclude-specific-commands">5. Exclude specific commands</h2>
+<p><code>--depth</code> is a blunt instrument — it cuts the entire tree at a given level. If you want to exclude one specific branch while keeping everything else, use <code>--exclude</code>.</p>
+<p>The argument is a dotted path from the root command name to the command you want to drop. The root command name in our file is <code>cli</code> (the Python function name), so to exclude the <code>config</code> group:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--exclude<span class="w"> </span>cli.config
+</code></pre></div>
+<p>The <code>config</code> group and all three of its subcommands disappear from the output. Everything else remains.</p>
+<p>You can pass <code>--exclude</code> multiple times to drop several branches:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--exclude<span class="w"> </span>cli.config<span class="w"> </span>--exclude<span class="w"> </span>cli.rollback
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Use the function name, not the program name</p>
+<p>The dotted path uses the command's underlying name — the Python function name or the <code>name=</code> argument passed to the decorator — not the <code>--program-name</code> display override. Our root group function is called <code>cli</code>, so the path starts with <code>cli.</code>, not <code>deployer.</code>.</p>
+</div>
+<hr />
+<h2 id="6-reveal-hidden-commands-and-options">6. Reveal hidden commands and options</h2>
+<p>The <code>admin</code> group is marked <code>hidden=True</code>, so it's invisible in normal runs. The <code>--debug-token</code> option on <code>logs</code> is also hidden. To include them in your output, add <code>--show-hidden</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--show-hidden
+</code></pre></div>
+<p>The output now includes the <code>admin</code> section with <code>purge</code> and <code>nuke</code>, and the <code>--debug-token</code> option appears in the <code>logs</code> section:</p>
+<div class="highlight"><pre><span></span><code><span class="gu">## admin</span>
+
+Internal admin commands. Not for regular users.
+
+<span class="gs">**Usage:**</span>
+
+<span class="sb">```text</span>
+deployer admin [OPTIONS] COMMAND [ARGS]...
+<span class="sb">```</span>
+
+<span class="gs">**Options:**</span>
+
+<span class="sb">```text</span>
+  --help  Show this message and exit.
+<span class="sb">```</span>
+
+<span class="gu">### nuke</span>
+
+Irreversibly destroy all deployment data and configuration.
+
+...
+
+<span class="gu">### purge</span>
+
+Purge all deployment history.
+
+...
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><code>--show-hidden</code> is ideal for generating an internal reference. You can maintain a single CLI definition and generate two documentation pages from it: a public one (without <code>--show-hidden</code>) and a private one (with it).</p>
+</div>
+<hr />
+<h2 id="7-switch-to-table-style">7. Switch to table style</h2>
+<p>By default, click-docs renders options as a formatted text block — exactly what you'd see if you ran your CLI with <code>--help</code>. This is the <code>plain</code> style.</p>
+<p>The <code>table</code> style renders options as a Markdown table instead, which some documentation sites display more attractively and which makes complex type information easier to scan:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--style<span class="w"> </span>table
+</code></pre></div>
+<p>Here's what the <code>logs</code> command's options look like in table style:</p>
+<div class="highlight"><pre><span></span><code><span class="gu">## logs</span>
+
+Stream or display recent logs for APP_NAME.
+
+<span class="gs">**Usage:**</span>
+
+<span class="sb">```text</span>
+deployer logs [OPTIONS] APP_NAME
+<span class="sb">```</span>
+
+<span class="gs">**Options:**</span>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| -e, --env | one of: staging, production | Environment to fetch logs from. |
+| -n, --lines | 1&lt;=x&lt;=1000 | Number of log lines to retrieve. |
+| --format | one of: text, json, structured | Output format for log entries. |
+| --follow | BOOL | Stream logs in real time. |
+</code></pre></div>
+<p>Notice how <code>IntRange(1, 1000)</code> becomes <code>1&lt;=x&lt;=1000</code> and <code>Choice(["text", "json", "structured"])</code> becomes <code>one of: text, json, structured</code>. The table style has built-in rendering for Click's rich parameter types.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>--help</code> option is always omitted from the table style — it's self-evident and would add noise to every single table.</p>
+</div>
+<hr />
+<h2 id="8-add-a-subcommand-table-of-contents">8. Add a subcommand table of contents</h2>
+<p>For CLIs with many top-level subcommands, it helps to give readers a quick overview before they hit the detailed sections. <code>--list-subcommands</code> inserts a bulleted list of direct subcommands after the root command's options:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--list-subcommands
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="gh"># deployer</span>
+
+...
+
+<span class="gs">**Options:**</span>
+
+<span class="sb">```text</span>
+  --help  Show this message and exit.
+<span class="sb">```</span>
+
+<span class="gs">**Subcommands:**</span>
+
+<span class="k">-</span><span class="w"> </span>[<span class="nt">config</span>](<span class="na">#config</span>): Manage per-environment application configuration.
+<span class="k">-</span><span class="w"> </span>[<span class="nt">deploy</span>](<span class="na">#deploy</span>): Deploy APP_NAME to the target environment.
+<span class="k">-</span><span class="w"> </span>[<span class="nt">logs</span>](<span class="na">#logs</span>): Stream or display recent logs for APP_NAME.
+<span class="k">-</span><span class="w"> </span>[<span class="nt">rollback</span>](<span class="na">#rollback</span>): Roll back APP_NAME to its previous version.
+<span class="k">-</span><span class="w"> </span>[<span class="nt">status</span>](<span class="na">#status</span>): Check the deployment status of APP_NAME.
+
+<span class="gu">## config</span>
+
+...
+</code></pre></div>
+<p>Each entry links to the corresponding section anchor, so readers can jump straight to what they need. Hidden commands are excluded from the list unless you also pass <code>--show-hidden</code>.</p>
+<hr />
+<h2 id="9-clean-up-the-ascii-art">9. Clean up the ASCII art</h2>
+<p>The <code>\b</code> block in the root command's help text renders as raw ASCII art in the Markdown output, which looks fine in a terminal but messy on a documentation page. Use <code>--remove-ascii-art</code> to strip it:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--remove-ascii-art
+</code></pre></div>
+<p>The root section goes from this:</p>
+<div class="highlight"><pre><span></span><code><span class="gh"># deployer</span>
+
+ ____             _
+|  _ \  ___ _ __ | | ___  _   _  ___ _ __
+...
+
+A tool for deploying and managing web applications.
+</code></pre></div>
+<p>To this:</p>
+<div class="highlight"><pre><span></span><code><span class="gh"># deployer</span>
+
+A tool for deploying and managing web applications.
+</code></pre></div>
+<p>The <code>\b</code> block and the blank line following it are removed. Everything after that blank line is kept.</p>
+<hr />
+<h2 id="10-customize-the-header-hierarchy">10. Customize the header hierarchy</h2>
+<p><strong>Starting depth</strong></p>
+<p>By default, the root command uses a level-1 heading (<code>#</code>). If you're embedding the output into a larger document that already has a level-1 title, use <code>--header-depth</code> to start deeper:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--header-depth<span class="w"> </span><span class="m">2</span>
+</code></pre></div>
+<p>The root uses <code>##</code>, its subcommands use <code>###</code>, and <code>config</code>'s sub-subcommands use <code>####</code>.</p>
+<p><strong>Full command paths in headers</strong></p>
+<p>By default, subcommand headings show only the command's own name — <code>## config</code>, <code>### get</code>. If you want headers to reflect the full invocation path (useful when embedding multiple CLIs in one page), use <code>--full-command-path</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--program-name<span class="w"> </span>deployer<span class="w"> </span>--full-command-path
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="gu">## deployer config</span>
+
+...
+
+<span class="gu">### deployer config get</span>
+
+...
+
+<span class="gu">### deployer config list</span>
+
+...
+</code></pre></div>
+<hr />
+<h2 id="11-persist-your-settings-in-pyprojecttoml">11. Persist your settings in pyproject.toml</h2>
+<p>Typing the same flags on every run gets old quickly. click-docs reads its configuration from <code>[tool.click-docs]</code> in your <code>pyproject.toml</code>, so you can set your preferred defaults once and forget about them.</p>
+<p>Add this to your <code>pyproject.toml</code>:</p>
+<div class="highlight"><span class="filename">pyproject.toml</span><pre><span></span><code><span class="k">[tool.click-docs]</span>
+<span class="n">program-name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;deployer&quot;</span>
+<span class="n">remove-ascii-art</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">list-subcommands</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;table&quot;</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;docs/cli-reference.md&quot;</span>
+</code></pre></div>
+<p>Now a bare invocation applies all of those settings automatically:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py
+</code></pre></div>
+<p>That single command generates <code>docs/cli-reference.md</code> with the table style, no ASCII art, and a subcommand TOC — every time.</p>
+<p>Any flag you pass on the command line overrides the config file. So if you occasionally want a plain-style version without rewriting your config:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>click-docs<span class="w"> </span>deployer.py<span class="w"> </span>--style<span class="w"> </span>plain<span class="w"> </span>--output<span class="w"> </span>docs/cli-reference-plain.md
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>click-docs searches for <code>pyproject.toml</code> starting from your current working directory and walking up to the filesystem root. You don't need to be in the same directory as <code>deployer.py</code> — as long as you're somewhere inside your project, click-docs will find the config.</p>
+</div>
+<hr />
+<h2 id="what-youve-learned">What you've learned</h2>
+<p>Here's everything covered in this tutorial:</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Limit recursion depth</td>
+<td><code>--depth N</code></td>
+</tr>
+<tr>
+<td>Exclude a branch</td>
+<td><code>--exclude cli.config</code></td>
+</tr>
+<tr>
+<td>Reveal hidden commands and options</td>
+<td><code>--show-hidden</code></td>
+</tr>
+<tr>
+<td>Use Markdown table for options</td>
+<td><code>--style table</code></td>
+</tr>
+<tr>
+<td>Add a subcommand TOC</td>
+<td><code>--list-subcommands</code></td>
+</tr>
+<tr>
+<td>Strip ASCII art</td>
+<td><code>--remove-ascii-art</code></td>
+</tr>
+<tr>
+<td>Start at a deeper heading level</td>
+<td><code>--header-depth 2</code></td>
+</tr>
+<tr>
+<td>Show full command paths in headers</td>
+<td><code>--full-command-path</code></td>
+</tr>
+<tr>
+<td>Persist defaults</td>
+<td><code>pyproject.toml [tool.click-docs]</code></td>
+</tr>
+</tbody>
+</table>
+<p>You now have the full toolkit. Between <code>--depth</code>, <code>--exclude</code>, <code>--show-hidden</code>, <code>--style</code>, and <code>pyproject.toml</code> configuration, you can generate exactly the documentation your project needs — for any Click application, from a three-command script to a deeply nested CLI with hundreds of subcommands.</p>
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../first-cli-documentation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Your First CLI Documentation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Your First CLI Documentation
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Corey Oordt
+
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["announce.dismiss","content.action.edit","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.path","navigation.prune","navigation.sections","navigation.top","navigation.tracking","search.highlight","toc.integrate"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.66be65ca.min.js"></script>
+      
+    
+  </body>
+</html>
