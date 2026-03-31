@@ -1,0 +1,1 @@
+::: click_docs.generator
