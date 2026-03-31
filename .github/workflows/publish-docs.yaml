@@ -4,7 +4,9 @@ concurrency: docs
 
 on:
   push:
-    branches: [ main]
+    branches:
+      - master
+      - main
 
 jobs:
   publish-docs:
@@ -16,18 +18,19 @@ jobs:
       pages: write
 
     steps:
+    - uses: actions/configure-pages@v5
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v6
+      uses: astral-sh/setup-uv@v7
       with:
         enable-cache: true
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.12"
 
@@ -38,5 +41,11 @@ jobs:
       run: uv sync --group docs
 
     - name: Build and publish docs
-      run: uv run mkdocs gh-deploy --strict
-  
+      run: uv run zensical build --clean
+
+    - uses: actions/upload-pages-artifact@v4
+      with:
+        path: site
+
+    - uses: actions/deploy-pages@v4
+      id: deployment

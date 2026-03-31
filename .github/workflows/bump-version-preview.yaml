@@ -3,7 +3,7 @@ name: Display version hint
 on:
   pull_request:
     types: [synchronize, opened, reopened, ready_for_review]
-    branches: [main]
+    branches: [master, main]
 
 permissions:
   contents: read
