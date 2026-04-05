@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import click
+import rich_click as click
 from click.core import ParameterSource
 
 from .config import find_config
