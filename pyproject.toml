@@ -29,6 +29,7 @@ requires-python = ">=3.10"
 dependencies = [
     "click >=8.1",
     "markdown>=3.7",
+    "rich-click>=1.8.4",
     "tomli>=2.0; python_version < '3.11'",
 ]
 authors = [
