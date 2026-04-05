@@ -4,8 +4,9 @@ from pathlib import Path
 
 import click
 import pytest
+import rich_click as rclick
 
-from click_docs.generator import generate_docs
+from click_docs.generator import _strip_ansi, generate_docs
 
 EXPECTED_DIR = Path(__file__).parent / "app"
 
@@ -408,3 +409,36 @@ class TestRemoveAsciiArt:
         expected = (EXPECTED_DIR / "expected_ascii_art_removed.md").read_text()
         result = generate_docs(_ascii_art, program_name="ascii-art", remove_ascii_art=True)
         assert result == expected
+
+
+# ---------------------------------------------------------------------------
+# ANSI stripping (rich-click compatibility)
+# ---------------------------------------------------------------------------
+
+
+@rclick.command()
+@rclick.option("--name", default="World", help="Who to greet.")
+def _rich_hello(name: str) -> None:
+    """A rich-click command for ANSI stripping tests."""
+
+
+def test_strip_ansi_removes_escape_codes() -> None:
+    assert _strip_ansi("\x1b[1mhello\x1b[0m") == "hello"
+
+
+def test_strip_ansi_leaves_plain_text_unchanged() -> None:
+    assert _strip_ansi("hello [OPTIONS]") == "hello [OPTIONS]"
+
+
+class TestAnsiStripping:
+    def test_usage_contains_no_ansi_escapes(self) -> None:
+        result = generate_docs(_rich_hello, program_name="rich-hello")
+        assert "\x1b[" not in result
+
+    def test_options_contain_no_ansi_escapes(self) -> None:
+        result = generate_docs(_rich_hello, program_name="rich-hello", style="plain")
+        assert "\x1b[" not in result
+
+    def test_usage_plain_text_format(self) -> None:
+        result = generate_docs(_rich_hello, program_name="rich-hello")
+        assert "rich-hello [OPTIONS]" in result

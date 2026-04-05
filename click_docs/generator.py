@@ -9,6 +9,20 @@ from typing import Iterator
 
 import click
 
+_ANSI_ESCAPE_RE = re.compile(r"\x1b\[[0-9;]*[mK]")
+
+
+def _strip_ansi(text: str) -> str:
+    """Strip ANSI terminal escape codes from *text*.
+
+    Args:
+        text: The string potentially containing ANSI escape sequences.
+
+    Returns:
+        The string with all ANSI escape sequences removed.
+    """
+    return _ANSI_ESCAPE_RE.sub("", text)
+
 
 def generate_docs(
     command: click.BaseCommand,
@@ -244,7 +258,7 @@ def _make_usage(ctx: click.Context) -> Iterator[str]:
     formatter = ctx.make_formatter()
     pieces = ctx.command.collect_usage_pieces(ctx)
     formatter.write_usage(ctx.command_path, " ".join(pieces), prefix="")
-    usage = formatter.getvalue().strip()
+    usage = _strip_ansi(formatter.getvalue()).strip()
 
     yield "**Usage:**"
     yield ""
@@ -298,7 +312,7 @@ def _make_options_plain(ctx: click.Context, show_hidden: bool = False) -> Iterat
     with formatter.section("Options"):
         formatter.write_dl(records)
 
-    option_lines = formatter.getvalue().splitlines()[1:]  # strip "Options:" header
+    option_lines = _strip_ansi(formatter.getvalue()).splitlines()[1:]  # strip "Options:" header
     if not option_lines:
         return
 
