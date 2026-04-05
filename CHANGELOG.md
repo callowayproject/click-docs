@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.3.0 (2026-04-05)
+
+[Compare the full difference.](https://github.com/callowayproject/click-docs/compare/0.2.0...0.3.0)
+
+### New
+
+- Add ANSI escape code stripping for compatibility with rich-click. [5dfd615](https://github.com/callowayproject/click-docs/commit/5dfd615d5be71ecbfd35409f49188d56a2a968fa)
+
+  - Introduced `_strip_ansi` utility function to remove ANSI escape codes.
+  - Enhanced `generate_docs` to ensure output is stripped of ANSI sequences.
+  - Replaced `click` with `rich-click` in CLI and updated related imports.
+  - Added tests to verify ANSI stripping functionality and ensure compatibility.
+
+- Add ANSI escape code stripping for compatibility with rich-click. [5e94b60](https://github.com/callowayproject/click-docs/commit/5e94b60e19d1b7bd893c7d1ec2ce14e69610ac1f)
+
+  - Introduced `_strip_ansi` utility function to remove ANSI escape codes.
+  - Enhanced `generate_docs` to ensure output is stripped of ANSI sequences.
+  - Replaced `click` with `rich-click` in CLI and updated related imports.
+  - Added tests to verify ANSI stripping functionality and ensure compatibility.
+
+### Other
+
+- Standardize project naming, update keywords, and enhance GitHub Actions workflows. [ae16a38](https://github.com/callowayproject/click-docs/commit/ae16a3887b67d1006f2d28f46863d5316d30b6fe)
+
 ## 0.2.0 (2026-03-31)
 
 [Compare the full difference.](https://github.com/callowayproject/click-docs/compare/0.1.0...0.2.0)
